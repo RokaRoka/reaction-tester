@@ -1,0 +1,15 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-w",
+      "-o",
+      "build/reactionTest",
+      "src/main.cpp"
+    ],
+    "directory": "/home/samjs/projects/C/ReactionTester",
+    "file": "/home/samjs/projects/C/ReactionTester/src/main.cpp",
+    "output": "/home/samjs/projects/C/ReactionTester/build/reactionTest"
+  }
+]
