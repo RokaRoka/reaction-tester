@@ -8,6 +8,7 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_events.h>
 
 // our libs
 #include "graphics.h"
@@ -19,6 +20,10 @@ bool init();
 bool loadMedia(Graphics &graphics);
 // Frees loaded media and closes SDL
 void close();
+
+void render();
+
+const int MS_UPDATE_FRAME = 32; // 30 FPS
 
 // fonts
 TTF_Font *gTitleFont = NULL;
@@ -43,24 +48,19 @@ int main(int argc, char *argv[]) {
                                 printf("Media was not able to be loaded :(\n");
                         }
                         else {
-                                // Start a new draw
-                                graphics.clear();
-
-                                SDL_Rect rect;
-                                rect.w = tTitleText->getWidth();
-                                rect.h = tTitleText->getHeight();
-                                rect.x = Graphics::SCREEN_WIDTH / 2 - rect.w/2;
-                                rect.y = rect.h;
-                                SDL_RenderCopy(graphics.getRenderer(), tTitleText->getTexture(), NULL, &rect);
-
-                                SDL_Rect rect2;
-                                rect2.w = tTitleDesc->getWidth();
-                                rect2.h = tTitleDesc->getHeight();
-                                rect2.x = Graphics::SCREEN_WIDTH / 2 - rect2.w/2;
-                                rect2.y = Graphics::SCREEN_HEIGHT - rect2.h - 48;
-                                SDL_RenderCopy(graphics.getRenderer(), tTitleDesc->getTexture(), NULL, &rect2);
-                                graphics.flip();
-                                SDL_Delay(3000);
+                                bool quit = false;
+                                while (!quit) {
+                                        // check for events
+                                        SDL_Event event;
+                                        while(SDL_PollEvent(&event)) {
+                                                // if quit event, leave gameloop
+                                                if (event.type == SDL_QUIT) {
+                                                        quit = true;
+                                                }
+                                        }
+                                        render();
+                                        SDL_Delay(MS_UPDATE_FRAME);
+                                }
                         }
                 }
         }
@@ -148,4 +148,24 @@ void close() {
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();
+}
+
+void render(Graphics &graphics) {
+        // Start a new draw
+        graphics.clear();
+
+        SDL_Rect rect;
+        rect.w = tTitleText->getWidth();
+        rect.h = tTitleText->getHeight();
+        rect.x = Graphics::SCREEN_WIDTH / 2 - rect.w/2;
+        rect.y = rect.h;
+        SDL_RenderCopy(graphics.getRenderer(), tTitleText->getTexture(), NULL, &rect);
+
+        SDL_Rect rect2;
+        rect2.w = tTitleDesc->getWidth();
+        rect2.h = tTitleDesc->getHeight();
+        rect2.x = Graphics::SCREEN_WIDTH / 2 - rect2.w/2;
+        rect2.y = Graphics::SCREEN_HEIGHT - rect2.h - 48;
+        SDL_RenderCopy(graphics.getRenderer(), tTitleDesc->getTexture(), NULL, &rect2);
+        graphics.flip();
 }
