@@ -1,4 +1,5 @@
 // C++ libs
+#include <SDL2/SDL_pixels.h>
 #include <cstdint>
 #include <cstdlib>
 #include <string>
@@ -18,16 +19,17 @@
 bool init();
 // Loads all media to be used in the program
 bool loadMedia(Graphics &graphics);
+// Renders to screen
+void render(Graphics &graphics);
 // Frees loaded media and closes SDL
 void close();
-
-void render();
 
 const int MS_UPDATE_FRAME = 32; // 30 FPS
 
 // fonts
 TTF_Font *gTitleFont = NULL;
 TTF_Font *gTextFont = NULL;
+bool gRenderDirty = false;
 
 // text graphics objects
 Texture *tTitleText = NULL;
@@ -48,6 +50,10 @@ int main(int argc, char *argv[]) {
                                 printf("Media was not able to be loaded :(\n");
                         }
                         else {
+                                // set clear color to black (my poor eyes, its 1:30am)
+                                graphics.setClearColor({0,0,0});
+                                // set draw dirty, for first draw
+                                gRenderDirty = true;
                                 bool quit = false;
                                 while (!quit) {
                                         // check for events
@@ -58,7 +64,7 @@ int main(int argc, char *argv[]) {
                                                         quit = true;
                                                 }
                                         }
-                                        render();
+                                        render(graphics);
                                         SDL_Delay(MS_UPDATE_FRAME);
                                 }
                         }
@@ -113,7 +119,7 @@ bool loadMedia(Graphics &graphics) {
     }
     else {
       // create title text
-      SDL_Color color = {0, 0, 0};
+      SDL_Color color = {0xFF, 0xFF, 0xFF};
       tTitleText = new Texture();
       tTitleText->loadFromText(graphics, "Reaction Tester (TM)", gTitleFont, color);
       if (tTitleText == NULL) {
@@ -151,21 +157,21 @@ void close() {
 }
 
 void render(Graphics &graphics) {
+        if (!gRenderDirty)
+                return;
+        gRenderDirty = false;
         // Start a new draw
         graphics.clear();
 
-        SDL_Rect rect;
-        rect.w = tTitleText->getWidth();
-        rect.h = tTitleText->getHeight();
-        rect.x = Graphics::SCREEN_WIDTH / 2 - rect.w/2;
-        rect.y = rect.h;
-        SDL_RenderCopy(graphics.getRenderer(), tTitleText->getTexture(), NULL, &rect);
+        // draw title
+        graphics.draw(Graphics::SCREEN_WIDTH / 2 - tTitleText->getWidth()/2,
+                      tTitleText->getHeight(),
+                      tTitleText);
 
-        SDL_Rect rect2;
-        rect2.w = tTitleDesc->getWidth();
-        rect2.h = tTitleDesc->getHeight();
-        rect2.x = Graphics::SCREEN_WIDTH / 2 - rect2.w/2;
-        rect2.y = Graphics::SCREEN_HEIGHT - rect2.h - 48;
-        SDL_RenderCopy(graphics.getRenderer(), tTitleDesc->getTexture(), NULL, &rect2);
+        // draw desc
+        graphics.draw(Graphics::SCREEN_WIDTH / 2 - tTitleDesc->getWidth()/2,
+                      Graphics::SCREEN_HEIGHT - tTitleDesc->getHeight() - 48,
+                      tTitleDesc);
+
         graphics.flip();
 }

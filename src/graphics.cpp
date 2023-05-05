@@ -1,4 +1,10 @@
 #include "graphics.h"
+#include "texture.h"
+
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_ttf.h>
+#include <iterator>
+#include <string>
 
 Graphics::Graphics() {}
 
@@ -17,7 +23,8 @@ bool Graphics::init() {
                 success = false;
         }
         else {
-                SDL_SetRenderDrawColor( mRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+                clear();
+                SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
         }
         return success;
 }
@@ -35,7 +42,18 @@ void Graphics::flip() {
 }
 
 void Graphics::clear() {
+        SDL_SetRenderDrawColor( mRenderer, mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a );
         SDL_RenderClear(mRenderer);
+}
+
+void Graphics::draw(int x, int y, Texture *texture) {
+        // set render color to white for draw operation
+        SDL_Rect rect = {x, y, texture->getWidth(), texture->getHeight()};
+        SDL_RenderCopy(mRenderer, texture->getTexture(), NULL, &rect);
+}
+
+void Graphics::setClearColor(SDL_Color color) {
+        mClearColor = color;
 }
 
 SDL_Renderer* Graphics::getRenderer() {
