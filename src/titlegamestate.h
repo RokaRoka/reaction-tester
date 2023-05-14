@@ -10,9 +10,9 @@ public:
     TitleGameState();
     ~TitleGameState();
 
-    void render(Graphics &graphics);
-    GameState* input();
     bool load(Graphics &graphics);
+    void render(Graphics &graphics);
+    void input();
 private:
 // fonts
     TTF_Font *mTitleFont = NULL;

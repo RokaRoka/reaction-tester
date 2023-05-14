@@ -1,7 +1,7 @@
 #include "titlegamestate.h"
+
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keycode.h>
-
 // #include <SDL2/SDL_ttf.h>
 
 TitleGameState::TitleGameState() {
@@ -37,24 +37,26 @@ void TitleGameState::render(Graphics &graphics) {
     graphics.flip();
 }
 
-GameState* TitleGameState::input() {
-  // check for events
-  SDL_Event event;
-  while(SDL_PollEvent(&event)) {
-          // if quit event, leave gameloop
-          if (event.type == SDL_QUIT) {
-                  return new GameState();
-          }
-          else if (event.type == SDL_KEYDOWN) {
-                  switch (event.key.keysym.sym) {
-                  case SDLK_RETURN:
-                  case SDLK_ESCAPE:
-                          return new GameState();
-                          break;
-                  }
-          }
-  }
-  return NULL;
+void TitleGameState::input() {
+        // check for events
+        SDL_Event event;
+        while(SDL_PollEvent(&event)) {
+                // if quit event, leave gameloop
+                if (event.type == SDL_QUIT) {
+                        setSwitchState(GAMESTATE_QUIT);
+                        return;
+                }
+                else if (event.type == SDL_KEYDOWN) {
+                        switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                                setSwitchState(GAMESTATE_QUIT);
+                                return;
+                        case SDLK_RETURN:
+                                setSwitchState(GAMESTATE_TEST);
+                                return;
+                        }
+                }
+        }
 }
 
 bool TitleGameState::load(Graphics &graphics) {

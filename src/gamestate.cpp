@@ -6,7 +6,6 @@ GameState::GameState() {
 }
 
 GameState::~GameState() {
-    exit();
 }
 
 void GameState::enter() {
@@ -21,10 +20,18 @@ void GameState::update(float delta) {
 void GameState::render(Graphics &graphics) {
 }
 
-GameState* GameState::input() {
-    return nullptr;
+void GameState::input() {
 }
 
 bool GameState::load(Graphics &graphics) {
     return false;
+}
+
+GameState::GameStateSwitch GameState::getSwitchState() {
+    return mSwitchState;
+}
+
+void GameState::setSwitchState(GameState::GameStateSwitch newState) {
+    if (mSwitchState != GAMESTATE_QUIT)
+        mSwitchState = newState;
 }
