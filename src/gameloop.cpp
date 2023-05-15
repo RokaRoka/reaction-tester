@@ -1,5 +1,7 @@
 #include "gameloop.h"
 
+#include <ctime>
+
 #include "graphics.h"
 #include "gamestate.h"
 #include "titlegamestate.h"
@@ -22,10 +24,10 @@ void GameLoop::doLoop() {
                         }
                         else {
                                 mGameState->enter();
-                                // set draw dirty, for first draw
                                 bool quit = false;
                                 while (!quit) {
-                                        float delta = MS_UPDATE_FRAME;
+                                        // delta is in seconds! not ms
+                                        float delta = MS_UPDATE_FRAME/1000.0;
                                         mGameState->input();
                                         mGameState->update(delta);
                                         mGameState->render(graphics);

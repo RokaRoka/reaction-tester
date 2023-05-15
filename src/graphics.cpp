@@ -52,6 +52,12 @@ void Graphics::draw(int x, int y, Texture *texture) {
         SDL_RenderCopy(mRenderer, texture->getTexture(), NULL, &rect);
 }
 
+void Graphics::drawRect(SDL_Rect *rect, SDL_Color color) {
+        SDL_SetRenderDrawColor( mRenderer, color.r, color.g, color.b, color.a );
+        SDL_RenderFillRect(mRenderer, rect);
+        SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+}
+
 void Graphics::setClearColor(SDL_Color color) {
         mClearColor = color;
 }

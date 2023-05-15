@@ -2,6 +2,7 @@
 #define GRAPHICS_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_ttf.h>
 
 #include <string>
@@ -26,6 +27,7 @@ class Graphics {
                 bool loadFont( std::string name, int size );
 
                 void draw(int x, int y, Texture *texture);
+                void drawRect(SDL_Rect *rect, SDL_Color color);
 
                 void setClearColor(SDL_Color color);
 
